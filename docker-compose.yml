@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/galaxy_chat
+      - OPENROUTER_API_KEY=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
+      - JWT_SECRET=docker-galaxy-chat-jwt-secret-2024
+      - NEXTAUTH_SECRET=docker-galaxy-chat-nextauth-secret-2024
+      - NEXTAUTH_URL=http://localhost:3000
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=galaxy_chat
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
